@@ -7,7 +7,7 @@ app = Flask(__name__)
 PORT = 443
 HOST = '0.0.0.0'
 
-@app.route("/", methods=['POST'])
+@app.route("/theatre", methods=['POST'])
 def index():
     intent = request.json['request']['intent']['name']
     switch = request.json['request']['intent']['slots']['Switch']['value']
