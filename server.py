@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from os import system
 import OpenSSL
+import pprint
 
 app = Flask(__name__)
 
@@ -9,6 +10,7 @@ HOST = '0.0.0.0'
 
 @app.route("/theatre", methods=['POST'])
 def index():
+    pprint.pprint(request.json)
     intent = request.json['request']['intent']['name']
     switch = request.json['request']['intent']['slots']['Switch']['value']
     isOn = True if switch == 'on' else False
