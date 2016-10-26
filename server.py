@@ -16,24 +16,24 @@ def index():
     isOn = True if switch == 'on' else False
     if isOn:
         if intent == 'ControlTV':
-            print(system('irsend SEND_ONCE TV P-On'))
+            print(system('irsend SEND_ONCE TV-Discrete P-On'))
         elif intent == 'ControlAVR':
             print(system('irsend SEND_ONCE HK KEY_POWER'))
         elif intent == 'ControlXF':
             print(system('irsend SEND_ONCE XF KEY_POWER'))
         elif intent == 'ControlALL':
-            print(system('irsend SEND_ONCE TV P-On'))
+            print(system('irsend SEND_ONCE TV-Discrete P-On'))
             print(system('irsend SEND_ONCE HK KEY_POWER'))
             print(system('irsend SEND_ONCE XF KEY_POWER'))
     else:
         if intent == 'ControlTV':
-            print(system('irsend SEND_ONCE TV P-Off'))
+            print(system('irsend SEND_ONCE TV-Discrete P-Off'))
         elif intent == 'ControlAVR':
             print(system('irsend SEND_ONCE HK off'))
         elif intent == 'ControlXF':
             print(system('irsend SEND_ONCE XF KEY_POWER'))
         elif intent == 'ControlALL':
-            print(system('irsend SEND_ONCE TV P-Off'))
+            print(system('irsend SEND_ONCE TV-Discrete P-Off'))
             print(system('irsend SEND_ONCE HK off'))
             print(system('irsend SEND_ONCE XF KEY_POWER'))
     response = {}
