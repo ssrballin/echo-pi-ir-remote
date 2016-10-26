@@ -9,7 +9,9 @@ PORT = 443
 HOST = '0.0.0.0'
 
 class TV:
+    @staticmethod
     def power(switch):
+        switch = switch.lower()
         if switch == 'on':
             print(system('irsend SEND_ONCE TV-Discrete P-On'))
             return True
@@ -18,21 +20,25 @@ class TV:
             return True
         return False
 
+    @staticmethod
     def volume(direction, level):
+        direction = direction.lower()
         amount = int(level)
         if amount < 1 or amount > 99:
             return False
         if direction in ['up', 'increase', 'raise']:
             for i in range(amount):
-                print(system('irsend SEND_ONCE TV KEY_VLOUMEUP'))
-                return True
+                print(system('irsend SEND_ONCE TV KEY_VOLUMEUP'))
+            return True
         elif direction in ['down', 'decrease', 'lower']:
             for i in range(amount):
-                print(system('irsend SEND_ONCE TV KEY_VLOUMEDOWN'))
-                return True
+                print(system('irsend SEND_ONCE TV KEY_VOLUMEDOWN'))
+            return True
         return False
 
+    @staticmethod
     def input(tvinput):
+        tvinput = tvinput.upper()
         if tvinput in ['HDMI 1', 'APPLE TV']:
             print(system('irsend SEND_ONCE TV-Discrete HDMI1'))
             return True
@@ -45,7 +51,9 @@ class TV:
         return False
 
 class AVR:
+    @staticmethod
     def power(switch):
+        switch = switch.lower()
         if switch == 'on':
             print(system('irsend SEND_ONCE HK KEY_POWER'))
             return True
@@ -55,7 +63,9 @@ class AVR:
         return False
 
 class XF:
+    @staticmethod
     def power(switch):
+        switch = switch.lower()
         if switch == 'on':
             print(system('irsend SEND_ONCE XF KEY_POWER'))
             return True
@@ -79,7 +89,7 @@ def index():
         isSuccessful = XF.power('on')
     elif intent == 'ControlALLPower':
         switch = request.json['request']['intent']['slots']['Switch']['value']
-        isSuccessful = TV.power(switch) and AVR.power(switch) and XF.power('on')
+        isSuccessful = TV.power(switch) and AVR.power(switch)
     elif intent == 'ControlTVVolume':
         direction = request.json['request']['intent']['slots']['Direction']['value']
         level = request.json['request']['intent']['slots']['Level']['value']
