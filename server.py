@@ -8,26 +8,85 @@ app = Flask(__name__)
 PORT = 443
 HOST = '0.0.0.0'
 
+class TV:
+    def power(switch):
+        if switch == 'on':
+            print(system('irsend SEND_ONCE TV-Discrete P-On'))
+            return True
+        elif switch == 'off':
+            print(system('irsend SEND_ONCE TV-Discrete P-Off'))
+            return True
+        return False
+
+    def volume(direction, level):
+        amount = int(level)
+        if amount < 1 or amount > 99:
+            return False
+        if direction in ['up', 'increase', 'raise']:
+            for i in range(amount):
+                print(system('irsend SEND_ONCE TV KEY_VLOUMEUP'))
+                return True
+        elif direction in ['down', 'decrease', 'lower']:
+            for i in range(amount):
+                print(system('irsend SEND_ONCE TV KEY_VLOUMEDOWN'))
+                return True
+        return False
+
+    def input(tvinput):
+        if tvinput in ['HDMI 1', 'APPLE TV']:
+            print(system('irsend SEND_ONCE TV-Discrete HDMI1'))
+            return True
+        elif tvinput in ['HDMI 2', 'PLAY STATION 4', 'PLAY STATION', 'PS4']:
+            print(system('irsend SEND_ONCE TV-Discrete HDMI2'))
+            return True
+        elif tvinput in ['HDMI 3', 'CABLE', 'COMCAST']:
+            print(system('irsend SEND_ONCE TV-Discrete HDMI3'))
+            return True
+        return False
+
+class AVR:
+    def power(switch):
+        if switch == 'on':
+            print(system('irsend SEND_ONCE HK KEY_POWER'))
+            return True
+        elif switch == 'off':
+            print(system('irsend SEND_ONCE HK off'))
+            return True
+        return False
+
+class XF:
+    def power(switch):
+        if switch == 'on':
+            print(system('irsend SEND_ONCE XF KEY_POWER'))
+            return True
+        elif switch == 'off':
+            print(system('irsend SEND_ONCE XF KEY_POWER'))
+            return True
+        return False
+
 @app.route("/theatre", methods=['POST'])
 def index():
-    pprint.pprint(request.json)
     intent = request.json['request']['intent']['name']
+    isSuccessful = False
+
     if intent == 'ControlTVPower':
         switch = request.json['request']['intent']['slots']['Switch']['value']
-        code = 'P-On' if switch == 'on' else 'P-Off'
-        print(system('irsend SEND_ONCE TV-Discrete {}'.format(code)))
+        isSuccessful = TV.power(switch)
     elif intent == 'ControlAVRPower':
         switch = request.json['request']['intent']['slots']['Switch']['value']
-        code = 'KEY_POWER' if switch == 'on' else 'off'
-        print(system('irsend SEND_ONCE HK {}'.format(code)))
+        isSuccessful = AVR.power(switch)
     elif intent == 'ControlXFPower':
-        print(system('irsend SEND_ONCE XF KEY_POWER'))
+        isSuccessful = XF.power('on')
     elif intent == 'ControlALLPower':
         switch = request.json['request']['intent']['slots']['Switch']['value']
-        code = 'P-On' if switch == 'on' else 'P-Off'
-        print(system('irsend SEND_ONCE TV-Discrete {}'.format(code)))
-        code = 'KEY_POWER' if switch == 'on' else 'off'
-        print(system('irsend SEND_ONCE HK {}'.format(code)))
+        isSuccessful = TV.power(switch) and AVR.power(switch) and XF.power('on')
+    elif intent == 'ControlTVVolume':
+        direction = request.json['request']['intent']['slots']['Direction']['value']
+        level = request.json['request']['intent']['slots']['Level']['value']
+        isSuccessful = TV.volume(direction, level)
+    elif intent == 'ControlTVInput':
+        tvinput = request.json['request']['intent']['slots']['Input']['value']
+        isSuccessful = TV.input(tvinput)
 
 
     response = {}
@@ -35,7 +94,7 @@ def index():
     response['response'] = {
         'outputSpeech': {
             'type': 'PlainText',
-            'text': 'Successfully turned {}!'.format(switch)
+            'text': 'Done!' if isSuccessful else 'Unable to complete request.'
         },
         'shouldEndSession': True
     }
