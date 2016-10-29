@@ -62,6 +62,22 @@ class AVR:
             return True
         return False
 
+    @staticmethod
+    def volume(direction, level):
+        direction = direction.lower()
+        amount = int(level)
+        if amount < 1 or amount > 99:
+            return False
+        if direction in ['up', 'increase', 'raise']:
+            for i in range(amount * 2):
+                print(system('irsend SEND_ONCE HK KEY_VOLUMEUP'))
+            return True
+        elif direction in ['down', 'decrease', 'lower']:
+            for i in range(amount * 2):
+                print(system('irsend SEND_ONCE HK KEY_VOLUMEDOWN'))
+            return True
+        return False
+
 class XF:
     @staticmethod
     def power(switch):
@@ -76,6 +92,7 @@ class XF:
 
 @app.route("/theatre", methods=['POST'])
 def index():
+    pprint.pprint(request.json)
     intent = request.json['request']['intent']['name']
     isSuccessful = False
 
@@ -84,7 +101,12 @@ def index():
         isSuccessful = TV.power(switch)
     elif intent == 'ControlAVRPower':
         switch = request.json['request']['intent']['slots']['Switch']['value']
+	print(switch)
         isSuccessful = AVR.power(switch)
+    elif intent == 'ControlAVRVolume':
+        direction = request.json['request']['intent']['slots']['Direction']['value']
+        level = request.json['request']['intent']['slots']['Level']['value']
+        isSuccessful = AVR.volume(direction, level)
     elif intent == 'ControlXFPower':
         isSuccessful = XF.power('on')
     elif intent == 'ControlALLPower':
