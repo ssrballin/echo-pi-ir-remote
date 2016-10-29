@@ -38,14 +38,14 @@ class TV:
 
     @staticmethod
     def input(tvinput):
-        tvinput = tvinput.upper()
-        if tvinput in ['HDMI 1', 'APPLE TV']:
+        tvinput = tvinput.upper().replace(' ', '')
+        if tvinput in ['HDMI1', 'APPLETV']:
             print(system('irsend SEND_ONCE TV-Discrete HDMI1'))
             return True
-        elif tvinput in ['HDMI 2', 'PLAY STATION 4', 'PLAY STATION', 'PS4']:
+        elif tvinput in ['HDMI2', 'PLAYSTATION4', 'PLAYSTATION', 'PS4']:
             print(system('irsend SEND_ONCE TV-Discrete HDMI2'))
             return True
-        elif tvinput in ['HDMI 3', 'CABLE', 'COMCAST']:
+        elif tvinput in ['HDMI3', 'CABLE', 'COMCAST']:
             print(system('irsend SEND_ONCE TV-Discrete HDMI3'))
             return True
         return False
