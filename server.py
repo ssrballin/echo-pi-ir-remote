@@ -69,11 +69,11 @@ class AVR:
         if amount < 1 or amount > 99:
             return False
         if direction in ['up', 'increase', 'raise']:
-            for i in range(amount * 2):
+            for i in range(amount * 2 + 1):
                 print(system('irsend SEND_ONCE HK KEY_VOLUMEUP'))
             return True
         elif direction in ['down', 'decrease', 'lower']:
-            for i in range(amount * 2):
+            for i in range(amount * 2 + 1):
                 print(system('irsend SEND_ONCE HK KEY_VOLUMEDOWN'))
             return True
         return False
