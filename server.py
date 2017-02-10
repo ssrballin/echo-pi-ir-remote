@@ -126,7 +126,7 @@ def index():
     response['response'] = {
         'outputSpeech': {
             'type': 'PlainText',
-            'text': 'Done!' if isSuccessful else 'Unable to complete request.'
+            'text': 'Done!' if isSuccessful else 'Unable to complete request'
         },
         'shouldEndSession': True
     }
